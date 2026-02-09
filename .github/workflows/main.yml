@@ -63,6 +63,6 @@ jobs:
 
           # Use sed to find the image line and replace the tag with the new SHA
 
-          sed -i "s|image: adijaiswal/ekart:.*|image: adijaiswal/ekart:${{ steps.vars.outputs.tag }}|g" deploymentservice.yml          
+          sed -i "s|image: adijaiswal/ekart:.*|image: adijaiswal/ekart:${{ steps.vars.outputs.tag }}|g" ./deploymentservice.yml          
 
          

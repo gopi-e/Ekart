@@ -1,9 +1,7 @@
-name: Docker Build CI
+name: Java Docker CI
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
     branches: [ "main" ]
 
 jobs:
@@ -11,21 +9,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Pull the code from your repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Set up Docker Buildx (enables advanced features like caching)
+      # 1. Set up JDK environment
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven' # Speeds up future builds by caching dependencies
+
+      # 2. Run Maven Clean Install
+      - name: Build with Maven
+        run: mvn clean install -DskipTests # Skipping tests for speed, remove flag to run them
+
+      # 3. Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # 3. Build the Docker image
+      # 4. Build the Docker image
       - name: Build Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: false # Set to true later if you want to push to a registry
-          tags: my-app:latest
-          
-      - name: Image Build Verification
-        run: docker images
+          push: false
+          tags: my-java-app:latest
